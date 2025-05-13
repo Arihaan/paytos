@@ -86,8 +86,25 @@ USDC_MINT=your_usdc_mint_address
 USDT_MINT=your_usdt_mint_address
 PYUSD_MINT=your_pyusd_mint_address
 ```
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key_for_admin_api
+
+# Admin API Security
+ADMIN_API_KEY=your_secure_admin_api_key
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000  # 15 minutes
+RATE_LIMIT_MAX_REQUESTS=100  # Maximum requests per window
+```
 
 4. Start the server
+
+```bash
+# Build JS from TypeScript
+npm run build
+
+# Start the application
+npm run dev
 ```
 npm run dev
 ```

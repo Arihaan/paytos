@@ -12,7 +12,6 @@ const {
 } = require('@solana/spl-token');
 const config = require('../../config/config');
 const walletUtils = require('../utils/wallet');
-const logger = require('../utils/logger');
 const User = require('../models/User');
 const TransactionModel = require('../models/Transaction');
 const PendingTransaction = require('../models/PendingTransaction');
