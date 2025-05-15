@@ -101,11 +101,9 @@ RATE_LIMIT_MAX_REQUESTS=100  # Maximum requests per window
 
 ```bash
 # Build JS from TypeScript
-npm run build
+npx tsc
 
 # Start the application
-npm run dev
-```
 npm run dev
 ```
 
@@ -131,7 +129,7 @@ https://your-server.com/sms/webhook
 - **SMS Gateway**: Twilio
 - **Security**: AES encryption for wallet keys
 
-## 🔒 Security Notes
+#build# 🔒 Security Notes
 
 - User wallet private keys are encrypted at rest
 - PINs are hashed before storage

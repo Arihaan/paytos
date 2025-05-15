@@ -64,9 +64,33 @@ const getTokenAccount = (walletAddress, tokenMint) => __awaiter(void 0, void 0, 
     const connection = getConnection();
     const wallet = new web3_js_1.PublicKey(walletAddress);
     const mint = new web3_js_1.PublicKey(tokenMint);
-    const tokenAccount = yield (0, spl_token_1.getOrCreateAssociatedTokenAccount)(connection, getMasterWallet().keypair, // Payer for transaction
-    mint, wallet);
-    return tokenAccount;
+    try {
+        // Import the function
+        const { getAssociatedTokenAddress } = require('@solana/spl-token');
+        const { AccountLayout } = require('@solana/spl-token');
+        // Find the associated token account address
+        const associatedTokenAddress = yield getAssociatedTokenAddress(mint, wallet);
+        // Check if the account exists
+        const tokenAccount = yield connection.getAccountInfo(associatedTokenAddress);
+        if (tokenAccount) {
+            // Deserialize the token account data to get amount
+            const accountData = AccountLayout.decode(tokenAccount.data);
+            return {
+                address: associatedTokenAddress,
+                amount: accountData.amount
+            };
+        }
+        else {
+            console.log('Token account does not exist, creating it...');
+            // If it doesn't exist, create it
+            return yield (0, spl_token_1.getOrCreateAssociatedTokenAccount)(connection, getMasterWallet().keypair, // Payer for transaction
+            mint, wallet);
+        }
+    }
+    catch (error) {
+        console.error('Error getting token account:', error);
+        throw error;
+    }
 });
 exports.getTokenAccount = getTokenAccount;
 /**
@@ -84,12 +108,18 @@ const checkTokenBalance = (walletAddress, token) => __awaiter(void 0, void 0, vo
     }
     // For other tokens, check token account
     const tokenMint = config_1.default.supportedTokens.mints[token];
+    console.log('Token mint:', tokenMint);
     if (!tokenMint) {
         throw new Error(`Unsupported token: ${token}`);
     }
     try {
         const tokenAccount = yield getTokenAccount(walletAddress, tokenMint);
-        return tokenAccount.amount / 1e6; // Most stablecoins have 6 decimals
+        console.log('Raw token account data:', tokenAccount);
+        console.log('Token account:', tokenAccount.amount);
+        // Convert BigInt to number before division
+        const amountNumber = Number(tokenAccount.amount);
+        console.log('Token account:', amountNumber / 1e6);
+        return amountNumber / 1e6; // Most stablecoins have 6 decimals
     }
     catch (error) {
         console.error(`Error checking ${token} balance:`, error);

@@ -43,8 +43,10 @@ const updateUserBalances = async (userId) => {
     }
     
     await user.save();
+    console.log(`Updated balances for user ${userId}`);
     logger.info(`Updated balances for user ${userId}`);
   } catch (error) {
+    console.error(`Failed to update balances for user ${userId}: ${error.message}`);
     logger.error(`Failed to update balances for user ${userId}: ${error.message}`);
     throw error;
   }
